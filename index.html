@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Question</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #ff4d6d;
+            --bg-gradient: linear-gradient(135deg, #fce4ec 0%, #ffebee 100%);
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: var(--bg-gradient);
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+        }
+
+        .heart-particle {
+            position: absolute;
+            color: rgba(255, 77, 109, 0.3);
+            pointer-events: none;
+            animation: floatUpwards 6s linear infinite;
+        }
+
+        @keyframes floatUpwards {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 3rem;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 350px;
+            z-index: 10;
+            border: 2px solid white;
+        }
+
+        .main-icon {
+            font-size: 4rem;
+            animation: heartbeat 1.5s ease infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 30%, 60% { transform: scale(1); }
+            15% { transform: scale(1.2); }
+            45% { transform: scale(1.1); }
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: #c9184a;
+            font-size: 2.8rem;
+            margin: 1rem 0 2rem;
+        }
+
+        /* This container keeps them side-by-side initially */
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            min-height: 50px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Quicksand', sans-serif;
+            transition: transform 0.2s ease;
+        }
+
+        #yesBtn {
+            background: var(--primary-pink);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+            z-index: 2;
+        }
+
+        #noBtn {
+            background: #fff;
+            color: #666;
+            border: 1px solid #ddd;
+            z-index: 2;
+            /* No absolute positioning yet! */
+        }
+
+        #celebration {
+            display: none;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="valentineCard">
+        <div id="content">
+            <div class="main-icon">💝</div>
+            <h1>Will you be my Valentine?</h1>
+            <div class="btn-container">
+                <button id="yesBtn">Yes!</button>
+                <button id="noBtn">No(dont press me)</button>
+            </div>
+        </div>
+        
+        <div id="celebration">
+            <div class="main-icon">🎉</div>
+            <h1>I knew you'd say yes!</h1>
+            <p>I love you so much cutie! ❤️</p>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const content = document.getElementById('content');
+        const celebration = document.getElementById('celebration');
+
+        // Create the background heart shower
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart-particle');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+        setInterval(createHeart, 300);
+
+        // Logic to move the button
+        function moveNoButton() {
+            // Once we start moving, we set position to fixed so it can go anywhere
+            noBtn.style.position = 'fixed';
+            
+            const padding = 50;
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+            
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
+            
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        // Event listeners for the "No" button
+        noBtn.addEventListener('mouseenter', moveNoButton);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveNoButton();
+        });
+
+        // Success Action
+        yesBtn.addEventListener('click', () => {
+            content.style.display = 'none';
+            noBtn.style.display = 'none';
+            celebration.style.display = 'block';
+            
+            // Celebration heart burst
+            for(let i=0; i<40; i++) {
+                setTimeout(createHeart, i * 30);
+            }
+        });
+    </script>
+</body>
+</html>
